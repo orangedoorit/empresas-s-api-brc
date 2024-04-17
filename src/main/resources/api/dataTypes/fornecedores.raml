@@ -1,0 +1,23 @@
+#%RAML 1.0 DataType
+
+properties:
+  fornecedores:
+    type: array
+    items: !include fornecedor.raml
+    
+example:
+  fornecedores:
+    - id: 1
+      razaoSocial: "John Doe LTDA"
+      cnpj: "21.958.154/0001-78"
+      endereco: "Av. Paulista, 3542, São Paulo - SP"
+      dataInclusao: 2020-11-30
+      email: "john.doe@orangedoor.com.br"
+      site: "johndueltda@johndue.com.br"
+    - id: 2
+      razaoSocial: "John Doe LTDA"
+      cnpj: "21.958.154/0001-78"
+      endereco: "Av. Paulista, 3542, São Paulo - SP"
+      dataInclusao: 2020-11-30
+      email: "john.doe@orangedoor.com.br"
+      site: "johndueltd@johndue.com.br"

@@ -1,0 +1,19 @@
+#%RAML 1.0 Library
+
+usage:
+
+securitySchemes:
+  token: !include ../commons/token.raml
+
+resourceTypes:
+  collection: !include ../commons/collection.raml
+
+types:
+  produto: !include ../dataTypes/produto.raml
+  cliente: !include ../dataTypes/cliente.raml
+  fornecedor: !include ../dataTypes/fornecedor.raml
+  empresa: !include ../dataTypes/empresa.raml
+  error: !include ../commons/error.raml
+  produtos: !include ../dataTypes/produtos.raml
+  clientes: !include ../dataTypes/clientes.raml
+  fornecedores: !include ../dataTypes/fornecedores.raml

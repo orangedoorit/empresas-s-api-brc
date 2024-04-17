@@ -1,0 +1,15 @@
+#%RAML 1.0 DataType
+
+properties:
+  errors:
+    type: array
+    items:
+      properties:
+        code: string
+        message: string
+
+example:
+  errors: 
+    -
+      code: "1234"
+      message: "example error"

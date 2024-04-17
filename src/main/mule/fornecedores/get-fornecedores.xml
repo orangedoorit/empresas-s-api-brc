@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<sub-flow name="get-fornecedores_sub-flow" doc:id="7aa9f63b-eb37-45ae-87c7-2a23a8cb43d8">
+			<db:select doc:name="Select" doc:id="5011c78f-ce00-439c-b647-01073e9b2d8a" config-ref="Empresas-DB_Database-Config">
+			<db:sql ><![CDATA[SELECT * FROM tbFornecedores;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="88265aec-407e-41a6-939c-5de03b25b558" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    "fornecedores": payload map (item, index) -> {
+        "id": item.idFornecedor,
+        "razaoSocial": item.razaoSocial,
+        "cnpj": item.cnpjFornecedor,
+        "endereco": item.enderecoFornecedor,
+        "dataInclusao": item.dtInclusao,
+        "email": item.emailFornecedor,
+        "site": item.siteFornecedor
+    }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	
+	
+	<sub-flow name="get-fornecedores-by-id_sub-flow" doc:id="b2428266-317a-468f-80e3-ef5c40f1a294">
+		<set-variable value="#[attributes.uriParams.id]" doc:name="ID" doc:id="f86ac5a2-fc99-4244-ac26-12bdae78613b" variableName="id"/>
+		<db:select doc:name="Select" doc:id="6bec9339-42c5-4a02-950c-3598064abb73" config-ref="Empresas-DB_Database-Config">
+			<db:sql ><![CDATA[SELECT * FROM tbFornecedores WHERE idFornecedor = :id]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id: vars.id
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="99fa2c08-41eb-4400-891a-fa817e97d330" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	site: payload[-1].siteFornecedor default "",
+	endereco: payload[-1].enderecoFornecedor default "",
+	dataInclusao: payload[-1].dtInclusao as String default "",
+	id: payload[-1].idFornecedor,
+	cnpj: payload[-1].cnpjFornecedor default "",
+	razaoSocial: payload[-1].razaoSocial default "",
+	email: payload[-1].emailFornecedor default ""
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+
+	
+	
+</mule>

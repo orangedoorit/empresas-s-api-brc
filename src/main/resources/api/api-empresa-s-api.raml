@@ -1,0 +1,127 @@
+#%RAML 1.0
+title: api-empresa-s-api
+
+uses:
+  lib: library/library.raml
+  
+securedBy:
+  - lib.token
+
+/empresas:
+
+  type:
+    lib.collection:
+      objectResponse: lib.empresa
+      errorResponse: lib.error
+
+  get:
+    description: "Lista todos os dados da empresa"
+
+  /produtos:
+    
+    type:
+      lib.collection:
+        objectResponse: lib.produtos
+        errorResponse: lib.error
+        createObject: lib.produto
+        createResponse: 
+        
+    
+    get:
+      description: "Lista todos os produtos"
+
+    post:
+    
+    /{id}:
+      
+      type:
+        lib.collection:
+          objectResponse: lib.produto
+          errorResponse: lib.error
+          putRequestObject: lib.produto
+                 
+      uriParameters:
+        id:
+          type: integer
+          
+      get:
+        description: "Get product by ID"
+
+      put:
+        description: "Update product by ID"
+      
+      delete:
+        description: "Delete product by ID"
+
+  /fornecedores:
+    
+    type:
+      lib.collection:
+        objectResponse: lib.fornecedores
+        errorResponse: lib.error
+        createObject: lib.fornecedor
+        createResponse: 
+        
+    
+    get:
+      description: "Lista todos os fornecedores"
+
+    post:
+    
+    /{id}:
+      
+      type:
+        lib.collection:
+          objectResponse: lib.fornecedor
+          errorResponse: lib.error
+          putRequestObject: lib.fornecedor
+                 
+      uriParameters:
+        id:
+          type: integer
+          
+      get:
+        description: "Get fornecedores by ID"
+
+      put:
+        description: "Update fornecedores by ID"
+      
+      delete:
+        description: "Delete fornecedores by ID"
+    
+  /clientes:
+    
+    type:
+      lib.collection:
+        objectResponse: lib.clientes
+        errorResponse: lib.error
+        createObject: lib.clientes
+        createResponse: 
+        
+    
+    get:
+      description: "Lista todos os clientes"
+
+    post:
+    
+    /{id}:
+      
+      type:
+        lib.collection:
+          objectResponse: lib.cliente
+          errorResponse: lib.error
+          putRequestObject: lib.cliente
+                 
+      uriParameters:
+        id:
+          type: integer
+          
+      get:
+        description: "Get clientes by ID"
+
+      put:
+        description: "Update clientes by ID"
+      
+      delete:
+        description: "Delete clientes by ID"
+  

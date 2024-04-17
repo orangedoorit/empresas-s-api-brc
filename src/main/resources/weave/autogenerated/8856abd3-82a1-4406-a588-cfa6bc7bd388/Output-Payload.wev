@@ -1,0 +1,13 @@
+%dw 2.0
+
+type auto_8856abd3_82a1_4406_a588_cfa6bc7bd388_Output_Payload = {
+  site: String, 
+  endereco: String, 
+  dataInclusao: String, 
+  id?: Number, 
+  cnpj: String, 
+  razaoSocial: String, 
+  email: String, 
+  _?: Any
+}
+

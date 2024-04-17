@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<sub-flow name="log-init_flow" doc:id="8856abd3-82a1-4406-a588-cfa6bc7bd388">
+		<logger level="INFO" doc:name="Logger de inicio" doc:id="2f58f1dc-1c1c-4db1-8af6-7f43659d4c42" message="Inicio do fluxo empresas\fornecedores" />
+	</sub-flow>
+	<sub-flow name="end-init_flow" doc:id="1a6322af-97e3-4a0a-b434-30b080fb881f">
+		<logger level="INFO" doc:name="Logger de fim" doc:id="14dac523-b820-4ead-92ed-a51cf5b5a7c2" message="Fim do fluxo empresas\fornecedores!!!" />
+	</sub-flow>
+</mule>

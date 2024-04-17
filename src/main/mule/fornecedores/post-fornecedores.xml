@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="post-fornecedores_flow" doc:id="e7e839fa-82df-4be1-a2e5-41bebb3f698b" >
+		<db:select doc:name="Busca a sequence do DB e armazena numa var" doc:id="6c8937d9-2467-4756-b741-572c47b948f4" config-ref="Empresas-DB_Database-Config" target="sequence" targetValue="#[payload[-1].idFornecedor]">
+			<db:sql ><![CDATA[select max(idFornecedor) + 1 as idFornecedor from tbFornecedores;]]></db:sql>
+		</db:select>
+		<db:insert doc:name="Insere novo fornecedor" doc:id="86899ed0-8640-41a3-ba89-2e292063b9cb" config-ref="Empresas-DB_Database-Config">
+			<db:sql ><![CDATA[INSERT INTO tbFornecedores 
+VALUES(:id, :razaoSocial, :cnpj, :endereco, :dataInclusao, :email, :site)
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[%dw 2.0
+output application/java
+---
+{
+	"id": vars.sequence,
+	"razaoSocial": payload.razaoSocial,
+	"cnpj": payload.cnpj replace "." with "" replace "-" with "" replace "/" with "",
+	"endereco": payload.endereco,
+	"dataInclusao": now(),
+	"email": payload.email,
+	"site": payload.site
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Build consumer Response" doc:id="a67781af-5d46-4b3b-a4d0-89b87be0bc7d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"fornecedor": {
+		id: vars.sequence
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value="201" doc:name="httpStatus" doc:id="3a5698b9-41ad-4df0-b3f5-583bd6bdaa8b" variableName="httpStatus"/>
+		<logger level="INFO" doc:name="Log do resultado do insert" doc:id="c45894a2-67fc-4d76-81e7-06c1b0cff0b6" message='#["Novo fornecedor inserido com o ID: " ++ vars.sequence as String]'/>
+	</flow>
+</mule>

@@ -1,0 +1,21 @@
+#%RAML 1.0 DataType
+
+properties:
+  clientes:
+    type: array
+    items: !include cliente.raml
+    
+example:
+  clientes:
+    - id: 1
+      nome: "John Doe"
+      cpf: "351.457.152-32"
+      endereco: "Av. Paulista, 3542, São Paulo - SP"
+      dataNascimento: 1989-12-19
+      email: "john.doe@orangedoor.com.br"
+    - id: 2
+      nome: "John Doe"
+      cpf: "351.457.152-32"
+      endereco: "Av. Paulista, 3542, São Paulo - SP"
+      dataNascimento: 1989-12-19
+      email: "john.doe@orangedoor.com.br"

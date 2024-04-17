@@ -1,0 +1,24 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  id?:
+    type: integer
+  nome:
+    type: string
+  cpf:
+    type: string
+  endereco:
+    type: string
+  dataNascimento:
+    type: date-only
+  email:
+    type: string
+    
+example:
+  id: 1
+  nome: "John Doe"
+  cpf: "351.457.152-32"
+  endereco: "Av. Paulista, 3542, São Paulo - SP"
+  dataNascimento: 1989-12-19
+  email: "john.doe@orangedoor.com.br"

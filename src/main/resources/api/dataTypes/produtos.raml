@@ -1,0 +1,21 @@
+#%RAML 1.0 DataType
+
+properties:
+  produtos:
+    type: array
+    items: !include produto.raml
+    
+example:
+  produtos:
+    - id: 1
+      descricao: "Parafuso XPTO"
+      codigoBarra: "1236912391948123712388999"
+      valor: 1.99
+      unidade: "UN"
+      idFornecedor: 123
+    - id: 2
+      descricao: "Parafuso XPTO"
+      codigoBarra: "1236912391948123712388999"
+      valor: 1.99
+      unidade: "UN"
+      idFornecedor: 123
