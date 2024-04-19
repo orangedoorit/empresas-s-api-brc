@@ -1,18 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+<mule
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
 	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
-	<flow name="put-fornecedores-flow" doc:id="e1cd8625-73d6-4c29-8828-009902a2540f" >
-		<ee:transform doc:name="Set ID to VAR" doc:id="bbe7d12e-16d9-4286-ba1e-ae230536db34" >
-			<ee:variables >
-				<ee:set-variable variableName="id" ><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+	
+	<flow
+		name="put-fornecedores-flow"
+		doc:id="e1cd8625-73d6-4c29-8828-009902a2540f">
+		<ee:transform
+			doc:name="Set ID to VAR"
+			doc:id="bbe7d12e-16d9-4286-ba1e-ae230536db34">
+			<ee:variables>
+				<ee:set-variable
+					resource="dwl/v-uri-param-id.dwl"
+					variableName="id" />
 			</ee:variables>
 		</ee:transform>
-		<db:update doc:name="Update Fornecedor in DB" doc:id="1e7d534f-d66c-4fc6-9fd6-773e87f53d8a" config-ref="Empresas-DB_Database-Config">
-			<db:sql ><![CDATA[UPDATE tbFornecedores 
+		<db:update
+			doc:name="Update Fornecedor in DB"
+			doc:id="1e7d534f-d66c-4fc6-9fd6-773e87f53d8a"
+			config-ref="Empresas-DB_Database-Config">
+			<db:sql><![CDATA[UPDATE tbFornecedores 
 SET 
         razaoSocial = :razaoSocial,
         cnpjFornecedor = :cnpj,
@@ -23,27 +37,20 @@ SET
 WHERE
 		idFornecedor = :id
 ]]></db:sql>
-			<db:input-parameters ><![CDATA[#[%dw 2.0
-output application/json
----
-{
-	id: vars.id,
-	razaoSocial: payload.razaoSocial,
-	cnpj: payload.cnpj replace "." with "" replace "-" with "" replace "/" with "",
-	endereco: payload.endereco,
-	dataInclusao: payload.dataInclusao,
-	email: payload.email,
-	site: payload.site
-}]]]></db:input-parameters>
+			<db:input-parameters><![CDATA[#[${file::dwl/fornecedores/c-input-parameters-put.dwl}]]]></db:input-parameters>
 		</db:update>
-		<ee:transform doc:name="Build Response" doc:id="bca56351-f860-4524-bcad-90600ac5e958" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output text/plain
----
-"Fornecedor alterado com sucesso ID: " ++ vars.id as String]]></ee:set-payload>
+		<ee:transform
+			doc:name="Build Response"
+			doc:id="bca56351-f860-4524-bcad-90600ac5e958">
+			<ee:message>
+				<ee:set-payload resource="dwl/fornecedores/p-build-response-to-put.dwl" />
 			</ee:message>
 		</ee:transform>
-		<set-variable value="200" doc:name="Set Variable" doc:id="3bf59d86-b736-4715-9935-e9bce5164941" variableName="httpStatus"/>
+		<set-variable
+			value="200"
+			doc:name="Set Variable"
+			doc:id="3bf59d86-b736-4715-9935-e9bce5164941"
+			variableName="httpStatus" />
 	</flow>
+	
 </mule>

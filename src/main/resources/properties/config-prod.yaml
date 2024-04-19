@@ -1,0 +1,11 @@
+api:
+  id: "xxxxxxxxx"
+  
+http:
+  timeout: "15000"
+  
+db:
+  mysql:
+    host: "xxxxxx"
+    port: "xxxxxx"
+    database: "xxxxxxx"

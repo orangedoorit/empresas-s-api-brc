@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+
+	<http:listener-config name="api-empresa-s-api-httpListenerConfig">
+		<http:listener-connection
+			host="0.0.0.0"
+			port="${http.port}" readTimeout="${http.timeout}"/>
+	</http:listener-config>
+	
+	<apikit:config
+		name="api-empresa-s-api-config"
+		api="api-empresa-s-api.raml"
+		outboundHeadersMapName="outboundHeaders"
+		httpStatusVarName="httpStatus" />
+		
+	<db:config
+		name="Empresas-DB_Database-Config"
+		doc:name="Database Config"
+		doc:id="d7b86f6e-989e-4b21-8bc3-b713a8fa5905">
+		<db:my-sql-connection
+			host="${db.mysql.host}"
+			port="${db.mysql.port}"
+			user="${secure::db.mysql.user}"
+			password="${secure::db.mysql.password}"
+			database="${db.mysql.database}" />
+	</db:config>
+	
+	<api-gateway:autodiscovery
+		apiId="${api.id}"
+		ignoreBasePath="true"
+		doc:name="API Autodiscovery"
+		doc:id="6a400b3e-aeba-4876-92d1-cba6d6214c7c"
+		flowRef="api-empresa-s-api-main" />
+		
+	<configuration-properties
+		doc:name="Configuration properties"
+		doc:id="6f2c38a6-10fb-4723-b3dd-de41603cb3bd"
+		file="properties/config.yaml" />
+		
+	<global-property
+		doc:name="Global Property"
+		doc:id="63e4d1b2-348c-4614-81e0-3208c48373f9"
+		name="mule.env"
+		value="dcba" />
+		
+	<configuration-properties
+		doc:name="Configuration properties"
+		doc:id="de27eee7-1c7f-4672-8de2-90c23ef49277"
+		file="properties/config-${mule.env}.yaml" />
+		
+	<secure-properties:config
+		name="Secure_Properties_Config"
+		doc:name="Secure Properties Config"
+		doc:id="cb9593db-bd6f-4e88-bd88-0320e5412aaf"
+		file="properties/config-secure-${mule.env}.yaml"
+		key="${encrypt.key}">
+		<secure-properties:encrypt algorithm="Blowfish" />
+	</secure-properties:config>
+	
+	<global-property
+		doc:name="Global Property"
+		doc:id="ed1639a8-63f9-4371-a4d7-ef93df337775"
+		name="encrypt.key"
+		value="abcd" />
+
+</mule>

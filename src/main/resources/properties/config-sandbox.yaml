@@ -1,0 +1,11 @@
+api:
+  id: "19424057"
+  
+http:
+  timeout: "30000"
+  
+db:
+  mysql:
+    host: "orangedoor-mysql-pfm-server.mysql.database.azure.com"
+    port: "3306"
+    database: "dbEmpresaBRC"
