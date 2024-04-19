@@ -1,0 +1,13 @@
+%dw 2.0
+
+type auto_cec29540_5480_4385_8df2_d43caeea8da3_Input_Payload = {
+  site: String, 
+  endereco: String, 
+  dataInclusao: String, 
+  id?: Number, 
+  cnpj: String, 
+  razaoSocial: String, 
+  email: String, 
+  _?: Any
+}
+
