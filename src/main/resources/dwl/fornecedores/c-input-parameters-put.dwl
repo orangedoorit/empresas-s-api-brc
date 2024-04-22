@@ -9,5 +9,4 @@ output application/json
 	dataInclusao: payload.dataInclusao,
 	email: payload.email,
 	site: payload.site
-	propriedade: p('db.mysql.host')
 }
