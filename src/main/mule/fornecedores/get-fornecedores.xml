@@ -13,15 +13,13 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<sub-flow
 		name="get-fornecedores_sub-flow"
 		doc:id="7aa9f63b-eb37-45ae-87c7-2a23a8cb43d8">
-		<db:select
-			doc:name="Select"
-			doc:id="5011c78f-ce00-439c-b647-01073e9b2d8a"
-			config-ref="Empresas-DB_Database-Config">
+		<try doc:name="Try" doc:id="efc60fda-190e-423e-970a-4fabc3f84f90" >
+			<db:select doc:name="Select" doc:id="5011c78f-ce00-439c-b647-01073e9b2d8a" config-ref="Empresas-DB_Database-Config">
 			<db:sql><![CDATA[SELECT * FROM tbFornecedores;]]></db:sql>
 		</db:select>
-		<ee:transform
-			doc:name="Transform Message"
-			doc:id="88265aec-407e-41a6-939c-5de03b25b558">
+			<error-handler ref="db_error-handler" />
+		</try>
+		<ee:transform doc:name="Transform Message" doc:id="88265aec-407e-41a6-939c-5de03b25b558">
 			<ee:message>
 				<ee:set-payload resource="dwl/fornecedores/p-transform-sql-output-to-response-object.dwl" />
 			</ee:message>
@@ -36,15 +34,15 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			doc:name="ID"
 			doc:id="f86ac5a2-fc99-4244-ac26-12bdae78613b"
 			variableName="id" />
-		<db:select
-			doc:name="Select"
-			doc:id="6bec9339-42c5-4a02-950c-3598064abb73"
-			config-ref="Empresas-DB_Database-Config">
+		<try doc:name="Try" doc:id="a92c9e00-c9d8-448f-9d21-ca3f67e443a9" >
+			<db:select doc:name="Select" doc:id="6bec9339-42c5-4a02-950c-3598064abb73" config-ref="Empresas-DB_Database-Config">
 			<db:sql><![CDATA[SELECT * FROM tbFornecedores WHERE idFornecedor = :id]]></db:sql>
 			<db:input-parameters><![CDATA[#[{
 	id: vars.id
 }]]]></db:input-parameters>
 		</db:select>
+			<error-handler ref="db_error-handler" />
+		</try>
 		<ee:transform
 			doc:name="Transform Message"
 			doc:id="99fa2c08-41eb-4400-891a-fa817e97d330">

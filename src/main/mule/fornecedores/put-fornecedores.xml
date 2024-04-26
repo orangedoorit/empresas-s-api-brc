@@ -22,10 +22,8 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 					variableName="id" />
 			</ee:variables>
 		</ee:transform>
-		<db:update
-			doc:name="Update Fornecedor in DB"
-			doc:id="1e7d534f-d66c-4fc6-9fd6-773e87f53d8a"
-			config-ref="Empresas-DB_Database-Config">
+		<try doc:name="Try" doc:id="a7b72bcb-9e54-4e15-a338-ab047e6c1951" >
+			<db:update doc:name="Update Fornecedor in DB" doc:id="1e7d534f-d66c-4fc6-9fd6-773e87f53d8a" config-ref="Empresas-DB_Database-Config">
 			<db:sql><![CDATA[UPDATE tbFornecedores 
 SET 
         razaoSocial = :razaoSocial,
@@ -39,6 +37,8 @@ WHERE
 ]]></db:sql>
 			<db:input-parameters><![CDATA[#[${file::dwl/fornecedores/c-input-parameters-put.dwl}]]]></db:input-parameters>
 		</db:update>
+			<error-handler ref="db_error-handler" />
+		</try>
 		<ee:transform
 			doc:name="Build Response"
 			doc:id="bca56351-f860-4524-bcad-90600ac5e958">

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<error-handler
+		name="db_error-handler"
+		doc:id="edf5fa1a-b590-4d06-9e18-b36fbb0f1869">
+		<on-error-propagate
+			enableNotifications="true"
+			logException="true"
+			doc:name="On Error Propagate"
+			doc:id="a7ee03b7-da20-411e-87f6-489eed55e851"
+			type="DB:BAD_SQL_SYNTAX">
+			<ee:transform
+				doc:name="Transform Message"
+				doc:id="6371f67b-fcd1-455d-a36a-6451038b0d76">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "errors": [
+    {
+      "code": "500",
+      "message": error.description
+    }
+  ]
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate
+			enableNotifications="true"
+			logException="true"
+			doc:name="On Error Propagate"
+			doc:id="50b82878-26f7-4a38-a094-3ada0692117b"
+			type="DB:CONNECTIVITY">
+			<ee:transform
+				doc:name="Transform Message"
+				doc:id="18924ac4-d2b0-4ab9-bd24-5a9ec7f30e5a">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "errors": [
+    {
+      "code": "500",
+      "message": error.description
+    }
+  ]
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate
+			enableNotifications="true"
+			logException="true"
+			doc:name="On Error Propagate"
+			doc:id="914beb09-8562-450a-84f6-2dd93dcded86"
+			type="DB:QUERY_EXECUTION">
+			<ee:transform
+				doc:name="Transform Message"
+				doc:id="1fd62a52-6e6d-4032-841f-b9fc0ae95fee">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "errors": [
+    {
+      "code": "500",
+      "message": "Procure um DBA"
+    }
+  ]
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate
+			enableNotifications="true"
+			logException="true"
+			doc:name="On Error Propagate"
+			doc:id="b0e33bd1-6977-4343-9963-4260e390562e"
+			type="DB:RETRY_EXHAUSTED">
+			<ee:transform
+				doc:name="Transform Message"
+				doc:id="67ce26fc-d4ee-49f5-8cec-ada949cfc3d3">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "errors": [
+    {
+      "code": "500",
+      "message": "O Database está indisponivel.!"
+    }
+  ]
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[500]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+	</error-handler>
+	<error-handler name="delete-flow_error_handler" doc:id="0e841e81-74e1-4b41-937e-6a66f4d3b35e" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="0dc03397-aba9-4c19-a76d-eadaada8f804" type="DELETE:NOT_FOUND">
+			<ee:transform doc:name="Transform Message" doc:id="0c4ab9f2-82b8-45f9-96e5-c774b10faf82" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "errors": [
+    {
+      "code": "404",
+      "message": error.description
+    }
+  ]
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="c044ce0f-b0b9-4999-b468-9cf7c361ae21" type="VM:CONNECTIVITY">
+			<ee:transform doc:name="Transform Message" doc:id="14ca2102-d797-4ca1-8d80-1db39c74e402" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "errors": [
+    {
+      "code": "500",
+      "message": "Não foi possivel gravar na fila!!! "
+    }
+  ]
+}]]></ee:set-payload>
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+		</on-error-propagate>
+	</error-handler>
+	<error-handler name="generic-error-handler" doc:id="85ba88ca-eff9-405c-a328-dfcfc9473656" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="1bba41d4-10da-4494-8258-a00f11e0e7d2" type="ANY" when='error.type != "DB:BAD_SQL_SYNTAX'>
+			<ee:transform doc:name="Transform Message" doc:id="5051c71d-01cc-42ce-8a45-b42987252ea8" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "errors": [
+    {
+      "code": "500",
+      "message": "Ocorreu um erro interno, favor abrir um ticket para equipe de integração!"
+    }
+  ]
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+	</error-handler>
+</mule>

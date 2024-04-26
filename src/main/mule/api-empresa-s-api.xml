@@ -32,10 +32,17 @@ http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/m
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{message: "Bad request"}]]></ee:set-payload>
+{
+  "errors": [
+    {
+      "code": "400",
+      "message": error.description
+    }
+  ]
+}]]></ee:set-payload>
 					</ee:message>
 					<ee:variables>
-						<ee:set-variable variableName="httpStatus">400</ee:set-variable>
+						<ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
 					</ee:variables>
 				</ee:transform>
 			</on-error-propagate>
@@ -411,6 +418,9 @@ output application/json
 			</ee:message>
 		</ee:transform>
 	</flow>
+	<flow name="api-empresa-s-apiFlow" doc:id="2ad78a5d-6a43-4122-be43-fda7f3c63c63" >
+		<logger level="INFO" doc:name="Logger" doc:id="f4bdb3db-c715-4da8-bdea-e9cb3800eec2" />
+	</flow>
 	<flow name="post:\empresas\fornecedores:application\json:api-empresa-s-api-config">
 
 		<flow-ref
@@ -426,6 +436,7 @@ output application/json
 			doc:name="end-init_flow"
 			doc:id="dfbc1693-731c-4879-abb8-fb1b401d0a3e"
 			name="end-init_flow" />
+		<logger level="INFO" doc:name="Logger" doc:id="5a895642-f223-4cbe-b06b-5f9a35e4a415" message="este log vai ser executado depois do erro"/>
 
 	</flow>
 	<flow name="post:\empresas\produtos:application\json:api-empresa-s-api-config">

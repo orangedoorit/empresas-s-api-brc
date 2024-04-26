@@ -6,15 +6,16 @@
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
-	<flow name="post-fornecedores_flow" doc:id="e7e839fa-82df-4be1-a2e5-41bebb3f698b" >
-		<db:select doc:name="Busca a sequence do DB e armazena numa var" doc:id="6c8937d9-2467-4756-b741-572c47b948f4" config-ref="Empresas-DB_Database-Config" target="sequence" targetValue="#[payload[-1].idFornecedor]">
-			<db:sql ><![CDATA[select max(idFornecedor) + 1 as idFornecedor from tbFornecedores;]]></db:sql>
+	<sub-flow name="post-fornecedores_flow" doc:id="4822f1cc-414d-4396-9d2d-cae7423a2d70" >
+		<try doc:name="Try" doc:id="7a7d2184-f910-4c4c-a0a9-aee86521d270" >
+			<db:select doc:name="Busca a sequence do DB e armazena numa var" doc:id="6c8937d9-2467-4756-b741-572c47b948f4" config-ref="Empresas-DB_Database-Config" target="sequence" targetValue="#[payload[-1].idFornecedor]">
+			<db:sql><![CDATA[select max(idFornecedor) + 1 as idFornecedor from tbFornecedores;]]></db:sql>
 		</db:select>
-		<db:insert doc:name="Insere novo fornecedor" doc:id="86899ed0-8640-41a3-ba89-2e292063b9cb" config-ref="Empresas-DB_Database-Config">
-			<db:sql ><![CDATA[INSERT INTO tbFornecedores 
+			<db:insert doc:name="Insere novo fornecedor" doc:id="86899ed0-8640-41a3-ba89-2e292063b9cb" config-ref="Empresas-DB_Database-Config">
+			<db:sql><![CDATA[INSERT INTO tbFornecedores
 VALUES(:id, :razaoSocial, :cnpj, :endereco, :dataInclusao, :email, :site)
 ]]></db:sql>
-			<db:input-parameters ><![CDATA[#[%dw 2.0
+			<db:input-parameters><![CDATA[#[%dw 2.0
 output application/java
 ---
 {
@@ -27,9 +28,12 @@ output application/java
 	"site": payload.site
 }]]]></db:input-parameters>
 		</db:insert>
-		<ee:transform doc:name="Build consumer Response" doc:id="a67781af-5d46-4b3b-a4d0-89b87be0bc7d" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+			<error-handler ref="db_error-handler" />
+		</try>
+		<try doc:name="Try" doc:id="9a965aa9-b5ff-491d-919b-407e4949c2ad" >
+			<ee:transform doc:name="Build consumer Response" doc:id="a67781af-5d46-4b3b-a4d0-89b87be0bc7d">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -39,9 +43,9 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<set-variable value="201" doc:name="httpStatus" doc:id="3a5698b9-41ad-4df0-b3f5-583bd6bdaa8b" variableName="httpStatus"/>
-		<vm:publish doc:name="Publish" doc:id="f4126a88-2ccd-4fa3-9725-cd80d1f9fcc0" config-ref="vm-connection_VM-config" queueName="fila_envio_email">
-			<vm:content ><![CDATA[#[%dw 2.0
+			<set-variable value="201" doc:name="httpStatus" doc:id="3a5698b9-41ad-4df0-b3f5-583bd6bdaa8b" variableName="httpStatus" />
+			<vm:publish doc:name="Publish" doc:id="f4126a88-2ccd-4fa3-9725-cd80d1f9fcc0" config-ref="vm-connection_VM-config" queueName="fila_envio_emaillll">
+			<vm:content><![CDATA[#[%dw 2.0
 output application/json
 ---
 {
@@ -50,6 +54,8 @@ output application/json
 	"client_id": vars.consumer
 }]]]></vm:content>
 		</vm:publish>
-		<logger level="INFO" doc:name="Log do resultado do insert" doc:id="c45894a2-67fc-4d76-81e7-06c1b0cff0b6" message='#["Novo fornecedor inserido com o ID: " ++ vars.sequence as String]'/>
-	</flow>
+			<logger level="INFO" doc:name="Log do resultado do insert" doc:id="c45894a2-67fc-4d76-81e7-06c1b0cff0b6" message='#["Novo fornecedor inserido com o ID: " ++ vars.sequence as String]' />
+			<error-handler ref="generic-error-handler" />
+		</try>
+	</sub-flow>
 </mule>
