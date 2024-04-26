@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<flow name="delete-fornecedores_flow" doc:id="cec29540-5480-4385-8df2-d43caeea8da3" >
 		<db:delete doc:name="Delete" doc:id="7572980d-6311-4625-827a-5f53f97c3826" config-ref="Empresas-DB_Database-Config">
 			<db:sql ><![CDATA[DELETE FROM tbFornecedores WHERE idFornecedor = :id]]></db:sql>
@@ -15,16 +17,45 @@ output application/java
 	"id": vars.id
 }]]]></db:input-parameters>
 		</db:delete>
-		<ee:transform doc:name="Build payload + set httpStatus" doc:id="47320466-ffd4-4132-9aaf-13dfe396c712" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+		<validation:is-true doc:name="Is true" doc:id="7f0d055b-d6c6-4ab4-8a60-c57281538265" expression="#[payload != 0]"/>
+		<choice doc:name="Choice" doc:id="f2b75a43-1842-4e87-9234-54fab7149b5a" >
+			<when expression="#[payload == 0]">
+				<logger level="INFO" doc:name="Logger" doc:id="868a6c26-9182-4292-a167-81cbbaaeb104" message="Nao foi possivel excluir o registro"/>
+				<ee:transform doc:name="Build payload + set httpStatus" doc:id="801c57e3-83d6-43a2-a86f-042ef09473c5" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output text/plain
+---
+"Esse registro não no DB"]]></ee:set-payload>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[404]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<vm:publish queueName="fila_envio_email" doc:name="Publish" doc:id="fbe949b5-35c1-4fd9-9fea-575d2a94898d" config-ref="vm-connection_VM-config">
+			<vm:content><![CDATA[#[%dw 2.0
+output application/json
+---
+{
+	"type": "Deleção de fornecedor",
+	"message": "Registro excluído com sucesso id: " ++ vars.id,
+	"client_id": vars.consumer
+}]]]></vm:content>
+		</vm:publish>
+				<ee:transform doc:name="Build payload + set httpStatus" doc:id="47320466-ffd4-4132-9aaf-13dfe396c712">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output text/plain
 ---
 "Registro excluído com sucesso id:" ++ vars.id]]></ee:set-payload>
 			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="httpStatus" ><![CDATA[200]]></ee:set-variable>
+			<ee:variables>
+				<ee:set-variable variableName="httpStatus"><![CDATA[200]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
+			</otherwise>
+		</choice>
 	</flow>
 </mule>

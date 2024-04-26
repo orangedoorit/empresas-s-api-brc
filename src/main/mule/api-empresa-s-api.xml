@@ -220,6 +220,7 @@ output application/json
 			doc:name="log-init_flow"
 			doc:id="21d4f878-1e12-4534-b34f-846ba6f25f56"
 			name="log-init_flow" />
+		<set-variable value='#[attributes.headers."client_id"]' doc:name="consumer" doc:id="9dc3b87a-47da-4e04-9240-a4373f8cadac" variableName="consumer"/>
 		<set-variable
 			value='#[attributes.uriParams."id"]'
 			doc:name="id"
@@ -286,71 +287,9 @@ output application/json
 		</ee:transform>
 	</flow>
 	<flow name="get:\empresas:api-empresa-s-api-config">
-		<ee:transform doc:name="Transform Message">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  fornecedores: [
-    {
-      id: 1,
-      razaoSocial: "John Doe LTDA",
-      cnpj: "21.958.154/0001-78",
-      endereco: "Av. Paulista, 3542, São Paulo - SP",
-      dataInclusao: "2020-11-30",
-      email: "john.doe@orangedoor.com.br",
-      site: "johndueltda@johndue.com.br"
-    }, 
-    {
-      id: 2,
-      razaoSocial: "John Doe LTDA",
-      cnpj: "21.958.154/0001-78",
-      endereco: "Av. Paulista, 3542, São Paulo - SP",
-      dataInclusao: "2020-11-30",
-      email: "john.doe@orangedoor.com.br",
-      site: "johndueltd@johndue.com.br"
-    }
-  ],
-  clientes: [
-    {
-      id: 1,
-      nome: "John Doe",
-      cpf: "351.457.152-32",
-      endereco: "Av. Paulista, 3542, São Paulo - SP",
-      dataNascimento: "1989-12-19",
-      email: "john.doe@orangedoor.com.br"
-    }, 
-    {
-      id: 2,
-      nome: "John Doe",
-      cpf: "351.457.152-32",
-      endereco: "Av. Paulista, 3542, São Paulo - SP",
-      dataNascimento: "1989-12-19",
-      email: "john.doe@orangedoor.com.br"
-    }
-  ],
-  produtos: [
-    {
-      id: 1,
-      descricao: "Parafuso XPTO",
-      codigoBarra: "1236912391948123712388999",
-      valor: 1.99,
-      unidade: "UN",
-      idFornecedor: 123
-    }, 
-    {
-      id: 2,
-      descricao: "Parafuso XPTO",
-      codigoBarra: "1236912391948123712388999",
-      valor: 1.99,
-      unidade: "UN",
-      idFornecedor: 123
-    }
-  ]
-} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
+		<flow-ref doc:name="log-init_flow" doc:id="7deeda8e-732e-4e09-ae43-f9e305be3369" name="log-init_flow" />
+		<flow-ref doc:name="get-empresas_Flow" doc:id="f2d3ee39-d7e3-4bc9-bd0c-bcbbd7cb5a30" name="get-empresas_Flow"/>
+		<flow-ref doc:name="end-init_flow" doc:id="3568ef18-90c9-4239-bd2a-0625a5ff89ad" name="end-init_flow" />
 	</flow>
 	<flow name="get:\empresas\fornecedores:api-empresa-s-api-config">
 		<logger
@@ -478,6 +417,7 @@ output application/json
 			doc:name="log-init_flow"
 			doc:id="c5661199-d74b-4584-9766-9ec0487aa584"
 			name="log-init_flow" />
+		<set-variable value='#[attributes.headers."client_id"]' doc:name="consumer" doc:id="4d288cfa-091c-4614-a290-979280b35a6c" variableName="consumer" />
 		<flow-ref
 			doc:name="post-fornecedores_flow"
 			doc:id="95f20b9d-e8b1-4e7c-902b-6cf2bcc2e0ed"

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="job-envio-emailFlow" doc:id="0833e023-981f-4d97-baae-3d63ea9ac039" >
+		<vm:listener doc:name="Listener" doc:id="52e7f3ca-c738-4a5e-b058-3466f02fefde" config-ref="vm-connection_VM-config" queueName="fila_envio_email"/>
+		<ee:transform doc:name="Transform Message" doc:id="747615bf-ea8d-4b8b-801c-ec6535513767" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="2efed2e6-5b49-4d54-a243-2de555e7f66f" >
+			<when expression="#[payload.'type' == &quot;Deleção de fornecedor&quot;]">
+				<logger level="INFO" doc:name="Logger" doc:id="7f9f9a3b-887f-48f2-a5e3-22a1397d2c4c" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"condicao": "caiu na deleção de fornecedor",&#10;	"mensagem_da_fila": payload&#10;}]' />
+			</when>
+			<when expression="#[payload.'type' == &quot;Criacao de fornecedor&quot;]">
+				<logger level="INFO" doc:name="Logger" doc:id="48289bd3-4399-44cc-a7cf-be3ea902a86a" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"condicao": "caiu na criacao de fornecedor",&#10;	"mensagem_da_fila": payload&#10;}]'/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="92907763-54c9-4c52-99dd-6e1027c141d7" message="Nenhuma condição foi atingida!"/>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

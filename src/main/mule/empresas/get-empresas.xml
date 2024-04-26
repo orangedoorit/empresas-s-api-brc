@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="get-empresas_Flow" doc:id="2a406556-c272-4c18-95a9-c70aa65f42d6" >
+		<scatter-gather doc:name="Scatter-Gather" doc:id="5db9b03c-a6da-4619-8932-4b68758b15b3" >
+			<route >
+				<db:select doc:name="Select all Clients" doc:id="8defa2fc-0f1e-4378-aac8-a05d5a484043" config-ref="Empresas-DB_Database-Config" target="clientes">
+			<db:sql><![CDATA[SELECT * FROM tbclientes;]]></db:sql>
+		</db:select>
+			</route>
+			<route >
+				<db:select doc:name="Select all Fornecedores" doc:id="119be8fc-a8e1-4545-8a8c-03aa35a499ed" config-ref="Empresas-DB_Database-Config" target="fornecedores">
+			<db:sql><![CDATA[SELECT * FROM tbFornecedores;]]></db:sql>
+		</db:select>
+			</route>
+			<route >
+				<db:select doc:name="Select all products" doc:id="a08c53d5-b679-4136-8cca-ccd3b3f7407b" config-ref="Empresas-DB_Database-Config" target="produtos">
+			<db:sql><![CDATA[SELECT * FROM tbProdutos;]]></db:sql>
+		</db:select>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="b710bd71-6e39-4b00-8655-a302af41e6a1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	fornecedores: vars.fornecedores map ( fornecedore , indexOfFornecedore ) -> {
+		id: fornecedore.idFornecedor,
+		razaoSocial: fornecedore.razaoSocial default "",
+		cnpj: fornecedore.cnpjFornecedor default "",
+		endereco: fornecedore.enderecoFornecedor default "",
+		dataInclusao: fornecedore.dtInclusao as String default "",
+		email: fornecedore.emailFornecedor default "",
+		site: fornecedore.siteFornecedor default ""
+	},
+	clientes: vars.clientes map ( cliente , indexOfCliente ) -> {
+		id: cliente.idCliente,
+		nome: cliente.nmCliente default "",
+		cpf: cliente.cpfCliente default "",
+		endereco: cliente.enderecoCliente default "",
+		dataNascimento: cliente.dtNascimento default "",
+		email: cliente.emailCliente default ""
+	},
+	produtos: vars.produtos map ( produto , indexOfProduto ) -> {
+		id: produto.idProduto,
+		descricao: produto.descricao default "",
+		codigoBarra: produto.codigoBarra default "",
+		valor: produto.valorProduto default 0,
+		unidade: produto.unidadeMedida default "",
+		idFornecedor: produto.idFornecedor default 0
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

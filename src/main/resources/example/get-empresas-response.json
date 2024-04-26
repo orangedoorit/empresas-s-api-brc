@@ -1,0 +1,58 @@
+{
+  "fornecedores": [
+    {
+      "id": 1,
+      "razaoSocial": "John Doe LTDA",
+      "cnpj": "21.958.154/0001-78",
+      "endereco": "Av. Paulista, 3542, São Paulo - SP",
+      "dataInclusao": "2020-11-30",
+      "email": "john.doe@orangedoor.com.br",
+      "site": "johndueltda@johndue.com.br"
+    },
+    {
+      "id": 2,
+      "razaoSocial": "John Doe LTDA",
+      "cnpj": "21.958.154/0001-78",
+      "endereco": "Av. Paulista, 3542, São Paulo - SP",
+      "dataInclusao": "2020-11-30",
+      "email": "john.doe@orangedoor.com.br",
+      "site": "johndueltd@johndue.com.br"
+    }
+  ],
+  "clientes": [
+    {
+      "id": 1,
+      "nome": "John Doe",
+      "cpf": "351.457.152-32",
+      "endereco": "Av. Paulista, 3542, São Paulo - SP",
+      "dataNascimento": "1989-12-19",
+      "email": "john.doe@orangedoor.com.br"
+    },
+    {
+      "id": 2,
+      "nome": "John Doe",
+      "cpf": "351.457.152-32",
+      "endereco": "Av. Paulista, 3542, São Paulo - SP",
+      "dataNascimento": "1989-12-19",
+      "email": "john.doe@orangedoor.com.br"
+    }
+  ],
+  "produtos": [
+    {
+      "id": 1,
+      "descricao": "Parafuso XPTO",
+      "codigoBarra": "1236912391948123712388999",
+      "valor": 1.99,
+      "unidade": "UN",
+      "idFornecedor": 123
+    },
+    {
+      "id": 2,
+      "descricao": "Parafuso XPTO",
+      "codigoBarra": "1236912391948123712388999",
+      "valor": 1.99,
+      "unidade": "UN",
+      "idFornecedor": 123
+    }
+  ]
+}
