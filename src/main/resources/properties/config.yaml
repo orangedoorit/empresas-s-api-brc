@@ -1,3 +1,7 @@
 http:
   protocol: "HTTP"
   port: "8081"
+  
+job:
+  startDelay: "0"
+  frequency: "15"

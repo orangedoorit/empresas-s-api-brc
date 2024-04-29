@@ -1,0 +1,11 @@
+id;razaoSocial;cnpj;endereco;dataInclusao;email;site
+100;Magazine Luiza S/A;30.512.905/0001-01;Avenida Chinqui Cuniyochi,836 - SP;2014-02-04;email@magalu.com.br;www.magazine.com
+101;Oracle Corporation;90.382.118/0001-14;Rua 1, 183 - São José do Rio Preto - SP;2014-02-05;email@oracle.com.br;www.oracle.com
+102;TATA Consultancy Services Limited;03.803.120/0001-15;Rua Doutor César, 410 - Santana - SP;2014-02-06;email@tcs.com.br;www.tcs.com
+103;Microsoft Corporation;85.335.483/0001-38;Rua Marino Leite, 812 - Piratiniga - SP;2014-02-07;email@microsoft.com.br;www.magazine.com
+104;Amazon.com, Inc.;02.179.322/0001-75;Rua General Mallet, 1232 - São Paulo - SP;2014-02-08;email@aws.com.br;www.aws.com
+105;Petróleo Brasileiro S.A.;77.337.293/0001-21;Rua Três de Maio, 12 - Curitiba - PR;2014-02-09;email@petro.com.br;www.petro.com
+106;Yara International ASA;26.112.014/0001-90;Alameda Buriti, 153 - Rio de Janeiro - RJ;2014-02-10;email@yara.com.br;www.yara.com
+107;Credicard S.A.;59.399.501/0001-35;Rua Lélis Vieira,1234 - Salvador - BA;2014-02-11;email@credcard.com.br;www.credicard.com
+109;Global Telecom S.A.;96.177.025/0001-34;Rua Armando Amaury de Almeida Azevedo, 1 - Jacareí - SP;2014-02-12;email@global.com.br;www.global.com
+110;Buscapé Company;45.912.573/0001-20;Rua Manoel Cebrian Ferrer, 253 - Maceió - AL;2014-02-13;email@buscapa.com.br;www.buscape.com
